@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhibolg.spider.dao.GameDao">
+	<sql id="liveroomColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.title AS "title",
+		a.url AS
+		"url",
+		a.img AS "img",
+		a.num AS "num",
+		a.index AS "index"
+	</sql>
+
+	<!-- 查询直播间列表 -->
+	<select id="findList" resultType="com.zhibolg.spider.model.Game">
+		SELECT
+		<include refid="liveroomColumns" />
+		FROM game a
+		<where>
+			<if test="index !=null and index!=''">
+				a.index = #{index}
+			</if>
+		</where>
+		ORDER BY a.num DESC
+	</select>
+
+	<!-- 批量插入 -->
+	<insert id="add" parameterType="java.util.List">
+		INSERT INTO
+		game(game.name,game.title,game.url,game.img,game.num,game.index)
+		VALUE
+		<foreach collection="list" item="item" separator=",">
+
+			(#{item.name},#{item.title},#{item.url},#{item.img},#{item.num},#{item.index})
+		</foreach>
+	</insert>
+
+	<!-- 删除直播间数据 -->
+	<delete id="delete">
+		DELETE FROM game
+		<where>
+			<if test="index !=null and index!=''">
+				game.index = #{index}
+			</if>
+		</where>
+	</delete>
+
+</mapper>
